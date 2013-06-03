@@ -208,7 +208,7 @@ class AutoCompleteSelectMultipleField(forms.fields.CharField):
 
     channel = None
 
-    def __init__(self, channel, *args, **kwargs):
+    def  __init__(self, channel, *args, **kwargs):
         self.channel = channel
 
         help_text = kwargs.get('help_text')
