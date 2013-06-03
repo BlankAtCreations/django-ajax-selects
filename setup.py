@@ -4,30 +4,33 @@ try:
     from setuptools import setup
 except ImportError:
     from ez_setup import use_setuptools
+
     use_setuptools()
     from setuptools import setup
 
 setup(name='django-ajax-selects',
-    version='1.2.5',
-    description='jQuery-powered auto-complete fields for editing ForeignKey, ManyToManyField and CharField',
-    author='crucialfelix',
-    author_email='crucialfelix@gmail.com',
-    url='https://github.com/crucialfelix/django-ajax-selects/',
-    packages=['ajax_select', ],
-    package_data={'ajax_select': ['*.py','*.txt','static/css/*','static/images/*','static/js/*','templates/*.html', 'templates/ajax_select/*.html']},
-    classifiers = [
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Development Status :: 5 - Production/Stable",
-        'Environment :: Web Environment',
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: MIT License",
-        "Operating System :: OS Independent",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        "Topic :: Software Development :: User Interfaces",
-        "Framework :: Django",
-        ],
-    long_description = """\
+      version='1.2.6',
+      description='jQuery-powered auto-complete fields for editing ForeignKey, ManyToManyField and CharField',
+      author='crucialfelix',
+      author_email='crucialfelix@gmail.com',
+      url='https://github.com/crucialfelix/django-ajax-selects/',
+      packages=['ajax_select', ],
+      package_data={
+      'ajax_select': ['*.py', '*.txt', 'static/css/*', 'static/images/*', 'static/js/*', 'templates/*.html',
+                      'templates/ajax_select/*.html']},
+      classifiers=[
+          "Programming Language :: Python",
+          "Programming Language :: Python :: 2",
+          "Development Status :: 5 - Production/Stable",
+          'Environment :: Web Environment',
+          "Intended Audience :: Developers",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
+          "Topic :: Software Development :: Libraries :: Python Modules",
+          "Topic :: Software Development :: User Interfaces",
+          "Framework :: Django",
+      ],
+      long_description="""\
 Enables editing of `ForeignKey`, `ManyToManyField` and `CharField` using jQuery UI AutoComplete.
 
 1. The user types a search term into the text field
@@ -45,7 +48,8 @@ Enables editing of `ForeignKey`, `ManyToManyField` and `CharField` using jQuery 
 + Ajax Selects works in the admin and also in public facing forms.
 + Rich formatting can be easily defined for the dropdown display and the selected "deck" display.
 + Templates and CSS are fully customizable
-+ JQuery triggers enable you to add javascript to respond when items are added or removed, so other interface elements on the page can react
++ JQuery triggers enable you to add javascript to respond when items are added or removed,
+so other interface elements on the page can react
 + Default (but customizable) security prevents griefers from pilfering your data via JSON requests
 
 """
