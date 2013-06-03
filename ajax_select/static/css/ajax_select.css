@@ -48,3 +48,8 @@ ul.ui-autocomplete li a {
 	padding: 2px 3px;
 	cursor: pointer;
 }
+
+.grp-row a.add-another {
+    top: 3px;
+    background: none;
+}

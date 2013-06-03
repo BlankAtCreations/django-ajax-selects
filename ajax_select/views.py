@@ -69,14 +69,16 @@ def add_popup(request, app_label, model):
 
 
 @permission_required('is_superuser')
-def ajax_form_lookup(request, model, app_label, channel, pk):
+def ajax_lookup_form(request, model, app_label, channel):
     project_name = os.path.basename(settings.PROJECT_ROOT)
     foreign_model_name = channel.capitalize()
     from django import forms
 
+    pk = request.GET.get('pk', 0)
+    counter = request.GET.get('counter', 0)
     ch = models.get_model(app_label, channel)
     foreign_model_instance = ch.objects.get(pk=pk)
-    counter = request.GET.get('counter', 0)
+
 
     project_forms = __import__('%s.%s.forms' % (project_name, app_label), globals(), locals(), ['a'], -1)
     ForeignForm = getattr(project_forms, '%sAdminForm' % foreign_model_name, None)

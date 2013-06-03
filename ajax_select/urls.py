@@ -10,9 +10,9 @@ urlpatterns = patterns('',
                            name='add_popup'
                        ),
                        url(
-                           r'^ajax_lookup/form/(?P<model>[-\w]+)/(?P<app_label>[-\w]+)/(?P<channel>[-\w]+)/(?P<pk>\d+)/$',
-                           'ajax_select.views.ajax_form_lookup',
-                           name='ajax_form_lookup'
+                           r'^ajax_lookup/form/(?P<model>[-\w]+)/(?P<app_label>[-\w]+)/(?P<channel>[-\w]+)/$',
+                           'ajax_select.views.ajax_lookup_form',
+                           name='ajax_lookup_form'
                        ),
 )
 

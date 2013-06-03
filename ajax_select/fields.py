@@ -379,6 +379,11 @@ def plugin_options(channel,channel_name,widget_plugin_options,initial):
         po['min_length'] = getattr(channel, 'min_length', 1)
     if not po.get('source'):
         po['source'] = reverse('ajax_lookup',kwargs={'channel':channel_name})
+    if not po.get('form_source'):
+        po['form_source'] = reverse('ajax_lookup_form',kwargs={'channel': widget_plugin_options['channel'],
+                                                          'model': widget_plugin_options['model'],
+                                                          'app_label': widget_plugin_options['app_label']
+                                                          })
     return {
         'plugin_options': mark_safe(simplejson.dumps(po)),
         # continue to support any custom templates that still expect these

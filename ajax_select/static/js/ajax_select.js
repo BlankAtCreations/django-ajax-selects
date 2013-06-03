@@ -1,3 +1,4 @@
+
 if (typeof jQuery.fn.autocompletehtml != 'function') {
 
     (function ($) {
@@ -25,6 +26,9 @@ if (typeof jQuery.fn.autocompletehtml != 'function') {
             return this.each(function () {
                 var id = this.id;
                 var $this = $(this);
+                var model = options.model;
+                var app_label = options.app_label;
+                var channel = options.channel;
 
                 var $text = $("#" + id + "_text");
                 var $deck = $("#" + id + "_on_deck");
@@ -35,30 +39,37 @@ if (typeof jQuery.fn.autocompletehtml != 'function') {
                     }
                     $this.val(ui.item.pk);
                     $text.val('');
-                    addKiller(ui.item.repr);
+                    addKiller(ui.item.repr, ui.item.pk);
                     $deck.trigger("added", ui.item);
 
                     return false;
                 }
 
                 function addKiller(repr, pk) {
-                    killer_id = "kill_" + pk + id;
-                    killButton = '<span class="ui-icon ui-icon-trash" id="' + killer_id + '">X</span> ';
+					var counter = 0;
+                    var killer_id = "kill_" + pk + id;
+                    var killButton = '<span class="ui-icon ui-icon-trash" id="' + killer_id + '">X</span> ';
                     if (repr) {
-                        $deck.empty();
-                        $deck.append("<div>" + killButton + repr + "</div>");
-                    } else {
-                        $("#" + id + "_on_deck > div").prepend(killButton);
+						$.get(options.form_source+'?pk=' + pk + '&counter=' + counter, function (data) {
+							$deck.empty();
+							$('#' + id + '_on_deck').append('<ul />');
+							$('#' + id + '_on_deck > ul').append(data);
+							$('#' + id + '_on_deck').append('<input type="hidden" name="' + model + '_' + channel + '-' + counter + '-id" value="' + pk + '" />');
+							$('#' + id + '_on_deck').append('<br style="clear: both;" />');
+							$("#" + id + "_on_deck").prepend(killButton);
+							$('#' + model + '_' + channel + '-TOTAL_FORMS').val(1);							
+							$("#" + killer_id).click(function () {
+								kill();
+								$deck.trigger("killed");
+							});							
+						});
                     }
-                    $("#" + killer_id).click(function () {
-                        kill();
-                        $deck.trigger("killed");
-                    });
                 }
 
                 function kill() {
                     $this.val('');
                     $deck.children().fadeOut(1.0).remove();
+					$('#' + model + '_' + channel + '-TOTAL_FORMS').val(0);						
                 }
 
                 options.select = receiveResult;
@@ -66,6 +77,7 @@ if (typeof jQuery.fn.autocompletehtml != 'function') {
                 $text.autocompletehtml();
 
                 if (options.initial) {
+					$(this).parents('form').append('<input id="' + options.model + '_' + options.channel + '-TOTAL_FORMS" type="hidden" value="0" name="' + options.model + '_' + options.channel + '-TOTAL_FORMS" />')				
                     its = options.initial;
                     addKiller(its[0], its[1]);
                 }
@@ -104,26 +116,27 @@ if (typeof jQuery.fn.autocompletehtml != 'function') {
                 }
 
                 function addKiller(repr, pk, counter) {
-
-                    killer_id = "kill_" + pk + id;
-                    killButton = '<span class="ui-icon ui-icon-trash" id="' + killer_id + '">X</span>';
-                    $deck.append('<div id="' + id + '_on_deck_' + pk + '">' + killButton + ' </div>');
-                    $.get('/admin/lookups/ajax_lookup/form/' + model + '/' + app_label + '/' + channel + '/' + pk + '/?counter=' + counter, function (data) {
+                    var killer_id = "kill_" + pk + id;
+                    var killButton = '<span class="ui-icon ui-icon-trash" id="' + killer_id + '">X</span>';
+					$deck.append('<div id="' + id + '_on_deck_' + pk + '">' + killButton + ' </div>');
+					$("#" + killer_id).hide();
+                    $.get(options.form_source+'?pk=' + pk + '&counter=' + counter, function (data) {
+						$("#" + killer_id).show();
                         $('#' + id + '_on_deck_' + pk).append('<ul />');
                         $('#' + id + '_on_deck_' + pk + ' > ul').append(data);
                         $('#' + id + '_on_deck_' + pk).append('<input type="hidden" name="' + model + '_' + channel + '-' + counter + '-id" value="' + pk + '" />');
                         $('#' + id + '_on_deck_' + pk).append('<br style="clear: both;" />');
-                    });
-                    total_forms++;
-                    $('#' + model + '-' + channel + '-TOTAL_FORMS').val(total_forms);
 
-                    $("#" + killer_id).click(function () {
-                        kill(pk);
-                        $deck.trigger("killed");
-                        total_forms--;
-                        $('#' + model + '-' + channel + '-TOTAL_FORMS').val(total_forms);
+						total_forms++;
+						$('#' + model + '_' + channel + '-TOTAL_FORMS').val(total_forms);
+				
                     });
-
+					$("#" + killer_id).click(function () {
+						kill(pk);
+						$deck.trigger("killed");
+						total_forms--;
+						$('#' + model + '_' + channel + '-TOTAL_FORMS').val(total_forms);
+					});
                 }
 
                 function kill(pk) {
@@ -136,11 +149,11 @@ if (typeof jQuery.fn.autocompletehtml != 'function') {
                 $text.autocompletehtml();
 
                 if (options.initial) {
-                    $('#customer_form').append('<input id="' + options.model + '-' + options.channel + '-TOTAL_FORMS" type="hidden" value="0" name="' + options.model + '-' + options.channel + '-TOTAL_FORMS" />')
+                    $(this).parents('form').append('<input id="' + options.model + '_' + options.channel + '-TOTAL_FORMS" type="hidden" value="0" name="' + options.model + '_' + options.channel + '-TOTAL_FORMS" />')
                     $.each(options.initial, function (i, its) {
+						console.log('adding killer for ' + its[0] + its[1] + i);
                         addKiller(its[0], its[1], i);
                     });
-
                 }
 
                 $this.bind('didAddPopup', function (event, pk, repr) {
