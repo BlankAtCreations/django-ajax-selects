@@ -1,4 +1,6 @@
 
+//leave a blank line here
+
 if (typeof jQuery.fn.autocompletehtml != 'function') {
 
     (function ($) {
